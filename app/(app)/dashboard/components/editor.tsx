@@ -78,7 +78,6 @@ export default function Editor({ id, initialContent, disabled }: EditorProps) {
                     onChange={() => {
                         handleSaveDocs(editor.document);
                     }}
-
                     editable={!disabled}
                 />
             </div>

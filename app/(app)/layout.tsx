@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Sidebar from "./common/app-sidebar";
 import Navbar from "./common/navbar";
+import DashboardNavbar from "./dashboard/components/Navbar";
 import { usePathname } from "next/navigation";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
@@ -32,12 +33,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                         {/* Mobile sidebar — rendered in a Sheet */}
                         <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
                             <SheetContent side="left" className="p-0 w-64 dark:bg-black">
-                                <Sidebar />
+                                <Sidebar  onOpenChange={setMobileSidebarOpen}/>
                             </SheetContent>
                         </Sheet>
 
                         <div className="flex-1 flex flex-col min-w-0">
-                            {!pathname?.includes("/dashboard") && <Navbar onMobileSidebarOpen={() => setMobileSidebarOpen(true)} />}
+                            {!pathname?.includes("/dashboard") ? <Navbar onMobileSidebarOpen={() => setMobileSidebarOpen(true)} /> : <DashboardNavbar onMobileSidebarOpen={() => setMobileSidebarOpen(true)} />}
                             <ScrollArea className="flex-1 overflow-y-auto bg-white dark:bg-black dark:border-white dark:text-white">
                                 <div className="max-w-8xl mx-auto">
                                     {children}

@@ -3,14 +3,11 @@
 import React, { useState } from 'react';
 import {
     Share2,
-    MoreHorizontal,
     Trash2,
-    Star,
-    ChevronRight,
-    History,
     MessageSquare,
     Globe,
-    Loader2
+    Loader2,
+    Menu
 } from 'lucide-react';
 import {
     AlertDialog,
@@ -23,14 +20,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import { Button } from "@/components/ui/button";
 import {
     Tooltip,
@@ -46,8 +36,8 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useAppDispatch, useAppSelector } from '@/store/hook';
-import { useParams, useRouter } from 'next/navigation';
-import { addToFavourites, moveToTrash, updatePost } from '@/store/slices/blogSlice';
+import { useParams } from 'next/navigation';
+import { moveToTrash, updatePost } from '@/store/slices/blogSlice';
 import { toast } from 'sonner';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
@@ -70,34 +60,33 @@ const TOPICS = [
     { value: "security", label: "Security" },
 ];
 
-export default function Navbar() {
+export default function Navbar({ onMobileSidebarOpen }: { onMobileSidebarOpen?: () => void }) {
 
-    const {data:session} = useSession();
-    const { currentBlogId, blogs, favourites } = useAppSelector((state) => state.blog);
+    const { data: session } = useSession();
+    const { currentBlogId, blogs } = useAppSelector((state) => state.blog);
     const blog = blogs.find((b) => String(b._id) === String(currentBlogId));
-    const {id} = useParams();
+    const { id } = useParams();
     const [loading, setLoading] = useState(false);
     const [selectedTopic, setSelectedTopic] = useState<string>("");
     const dispatch = useAppDispatch();
     const [isPublished, setIsPublished] = useState(blogs.find((b) => String(b._id) === String(id))?.publish);
-    const router = useRouter();
 
     const moveToTrashMutation = useMutation({
-        mutationFn: async()=>{
-            const response = await axios.delete(`http://localhost:8002/api/v1/blog/delete-blog/${id}`,{
-                headers:{
+        mutationFn: async () => {
+            const response = await axios.delete(`http://localhost:8002/api/v1/blog/delete-blog/${id}`, {
+                headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
                 }
             });
             return response.data;
         },
-        onSuccess:(data)=>{
+        onSuccess: (data) => {
             toast.success(data.message);
-         
+
         },
-        onError:(err)=>{
-            if(axios.isAxiosError(err)){
+        onError: (err) => {
+            if (axios.isAxiosError(err)) {
                 toast.error("Failed to move blog to trash");
                 toast.error(err.response?.data.message);
             }
@@ -108,25 +97,25 @@ export default function Navbar() {
         onMutate: () => {
             setLoading(true);
         },
-        mutationFn: async()=>{
-            const response = await axios.patch(`http://localhost:8002/api/v1/blog/make-public/${id}`,{
+        mutationFn: async () => {
+            const response = await axios.patch(`http://localhost:8002/api/v1/blog/make-public/${id}`, {
                 topic: selectedTopic
-            },{
-                headers:{
+            }, {
+                headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
                 }
             });
-           setIsPublished(!isPublished);
-           dispatch(updatePost({_id:String(id), publish:!isPublished}))
-           return response.data;
+            setIsPublished(!isPublished);
+            dispatch(updatePost({ _id: String(id), publish: !isPublished }))
+            return response.data;
         },
-        onSuccess:(data)=>{
+        onSuccess: (data) => {
             toast.success(data.message);
             setLoading(false);
         },
-        onError:(err)=>{
-            if(axios.isAxiosError(err)){
+        onError: (err) => {
+            if (axios.isAxiosError(err)) {
                 toast.error("Failed to publish blog");
                 toast.error(err.response?.data.message);
                 setLoading(false);
@@ -134,24 +123,33 @@ export default function Navbar() {
         }
     })
 
-    const handleShare = async() => {
-        try{
+    const handleShare = async () => {
+        try {
             await navigator.share({
                 title: blog?.title,
                 text: blog?.content,
                 url: window.location.href,
-            }) 
+            })
             toast.success("Blog shared successfully");
-        }catch(e){
+        } catch (e) {
             console.log(e);
-        } 
+        }
     }
-    
+
     return (
         <nav className="h-14 border-b border-editorial-border bg-white/80 backdrop-blur-md flex items-center justify-between px-6 sticky top-0 z-30 p-3 dark:bg-black/80 dark:backdrop-blur-md">
             {/* Left: Breadcrumbs */}
             <div className="flex items-center gap-4">
-                <DynamicBreadcrumbs lastSegmentTitle={blog?.title} />
+                <button
+                    onClick={onMobileSidebarOpen}
+                    className="lg:hidden p-2 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-white/10 transition-all"
+                    aria-label="Open sidebar"
+                >
+                    <Menu size={20} />
+                </button>
+                <div className="hidden md:block">
+                    <DynamicBreadcrumbs lastSegmentTitle={blog?.title} />
+                </div>
             </div>
 
             {/* Right: Actions */}
@@ -163,9 +161,9 @@ export default function Navbar() {
                         }}>
                             <NavAction icon={<Star size={16} color={favourites.includes(Number(id))? "black" : "gray"}/>} tooltip="Favorite" />     
                         </div>   */}
-                         <Tooltip>
+                        <Tooltip>
                             <TooltipTrigger asChild>
-                               <ModeToggle/>
+                                <ModeToggle />
                             </TooltipTrigger>
                             <TooltipContent side="bottom" className="bg-slate-900 text-white text-[10px]">
                                 Change Theme
@@ -208,16 +206,20 @@ export default function Navbar() {
                                     <AlertDialogFooter>
                                         <AlertDialogCancel className='cursor-pointer rounded-sm font-normal'>Cancel</AlertDialogCancel>
                                         <AlertDialogAction className='cursor-pointer rounded-sm' onClick={() => {
+                                            if (!selectedTopic && !isPublished) {
+                                                toast.error("Please select a topic");
+                                                return;
+                                            }
                                             publishBlogMutation.mutate();
                                         }}>
-                                            {loading ? <Loader2 className='animate-spin' size={18}/> : isPublished ? "Unpublish" : "Publish"}
+                                            {loading ? <Loader2 className='animate-spin' size={18} /> : isPublished ? "Unpublish" : "Publish"}
                                         </AlertDialogAction>
                                     </AlertDialogFooter>
                                 </AlertDialogContent>
                             </AlertDialog>
                         </div>
-                        <div onClick={()=>{document.getElementById("comments")?.scrollIntoView({behavior: "smooth"});}}>
-                        <NavAction icon={<MessageSquare size={16} />} tooltip="Click here to view comments" />
+                        <div onClick={() => { document.getElementById("comments")?.scrollIntoView({ behavior: "smooth" }); }}>
+                            <NavAction icon={<MessageSquare size={16} />} tooltip="Click here to view comments" />
                         </div>
                     </div>
 
@@ -232,7 +234,7 @@ export default function Navbar() {
                             Share
                         </Button>
 
-                       
+
 
                         <Tooltip>
                             <TooltipTrigger asChild>
@@ -240,12 +242,12 @@ export default function Navbar() {
                                     variant="ghost"
                                     size="icon"
                                     className="h-8 w-8 text-editorial-muted hover:text-red-600 hover:bg-red-50 transition-all cursor-pointer"
-                                    onClick={()=>{
+                                    onClick={() => {
                                         dispatch(moveToTrash((id)));
                                         moveToTrashMutation.mutate();
                                     }}
                                 >
-                                    <Trash2 size={16}  />
+                                    <Trash2 size={16} />
                                 </Button>
                             </TooltipTrigger>
                             <TooltipContent side="bottom" className="bg-slate-900 text-white text-[10px]">

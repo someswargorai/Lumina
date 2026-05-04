@@ -186,7 +186,7 @@ export default function ProfilePage() {
                                         variant="outline"
                                         size="icon"
                                         className="rounded-full h-10 w-10 border-slate-200"
-                                        onClick={() => toast.info("Chat feature coming soon!")}
+                                        onClick={() => router.push(`/chat/${id}`)}
                                     >
                                         <MessageSquare size={18} />
                                     </Button>
@@ -219,7 +219,7 @@ export default function ProfilePage() {
                     </div>
 
                     <div className="mt-4">
-                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed max-w-2xl">
+                        <p className="text-slate-700 dark:text-slate-300 leading-relaxed">
                             {user.bio || "No bio yet. This user is a man of few words."}
                         </p>
                     </div>

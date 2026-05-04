@@ -31,10 +31,13 @@ import { toast } from 'sonner';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
 
 
-export default function Sidebar() {
+export default function Sidebar({
+    onOpenChange,
+}: {
+    onOpenChange?: (open: boolean) => void;
+}) {
     const { data: session } = useSession();
     const { blogs = [] } = useAppSelector(state => state.blog || {});
     const [currentPostId, setCurrentPostId] = useState<string>("");
@@ -126,6 +129,7 @@ export default function Sidebar() {
 
     const onNewPost = () => {
         createBlogMutation.mutate();
+        onOpenChange?.(false);
     }
 
     const onSave = (title: string, id: string) => {
@@ -159,28 +163,33 @@ export default function Sidebar() {
 
             <div className="px-4 space-y-0.5 mb-1" onClick={() => {
                 router.push("/updates")
+                onOpenChange?.(false);
             }}>
                 <SidebarItem icon={<Clock size={16} />} label="Updates" />
             </div>
             <div className="px-4 space-y-0.5 mb-1" onClick={() => {
                 router.push("/settings")
+                onOpenChange?.(false);
             }}>
                 <SidebarItem icon={<Settings size={16} />} label="Settings" />
             </div>
             <div className="px-4 space-y-0.5 mb-1" onClick={() => {
                 router.push("/trash");
+                onOpenChange?.(false);
             }}>
                 <SidebarItem icon={<Trash size={16} />} label="Trash" />
             </div >
 
             <div className="px-4 space-y-0.5 mb-1" onClick={() => {
                 router.push("/feed");
+                onOpenChange?.(false);
             }}>
                 <SidebarItem icon={<Rss size={16} />} label="Feed" />
             </div >
 
             <div className="px-4 space-y-0.5 mb-8" onClick={() => {
                 router.push("/saved");
+                onOpenChange?.(false);
             }}>
                 <SidebarItem icon={<Bookmark size={16} />} label="Saved" />
             </div >

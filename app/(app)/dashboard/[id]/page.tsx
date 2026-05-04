@@ -154,7 +154,8 @@ export default function Dashboard() {
                 id={id as string}
                 initialContent={data?.data?.content}
             />
-            {!isLoadingOrNot && data?.data?.isPublish && <section className="max-w-3xl mx-auto px-6 mt-10">
+            {!isLoadingOrNot && data?.data?.isPublish && 
+            <section className="max-w-3xl mx-auto px-6 mt-10">
                 <div className="flex items-center justify-between mb-8">
                     <h2 className="text-xl font-normal text-slate-900 tracking-tight">
                         Responses ( {data?.data?.comments?.length || 0} )

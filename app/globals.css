@@ -167,6 +167,21 @@ body::-webkit-scrollbar-thumb:hover {
   display: inline-block;
 }
 
+.tiptap {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  overflow-wrap: break-word;
+  white-space: normal;
+  word-break: break-all;
+  max-width: 100%;
+}
+
+@media (max-width: 668px) {
+  .tiptap {
+    font-size: 12px !important;
+  }
+} 
+
 @keyframes twinkle {
 
   0%,
