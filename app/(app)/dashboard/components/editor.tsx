@@ -37,7 +37,7 @@ export default function Editor({ id, initialContent, disabled }: EditorProps) {
 
     const updateBlog = useMutation({
         mutationFn: async (blocks: Block[]) => {
-            const response = await axios.put(`http://localhost:8002/api/v1/blog/update-blog/${id}`, {
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/update-blog/${id}`, {
                 content: blocks
             }, {
                 headers: {

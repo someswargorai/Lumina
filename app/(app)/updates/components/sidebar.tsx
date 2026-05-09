@@ -21,12 +21,12 @@ export default function Sidebar() {
     const [isFollowing, setIsFollowing] = useState(false);
     const [currentId, setCurrentId] = useState("");
     const queryClient = useQueryClient();
-    const router= useRouter();
+    const router = useRouter();
 
     const { data, isLoading } = useQuery({
         queryKey: ["users-to-follow"],
         queryFn: async () => {
-            const res = await axios.get("http://localhost:8002/api/v1/blog/get-users", {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-users`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -40,7 +40,7 @@ export default function Sidebar() {
     const { data: topics, isLoading: topicLoading } = useQuery({
         queryKey: ["topics"],
         queryFn: async () => {
-            const res = await axios.get("http://localhost:8002/api/v1/blog/get-topics", {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-topics`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -58,7 +58,7 @@ export default function Sidebar() {
 
     const toggleFollowMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await axios.patch(`http://localhost:8002/api/v1/blog/toggle-follow/${id}`, {}, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/toggle-follow/${id}`, {}, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -95,7 +95,7 @@ export default function Sidebar() {
                                 <button
                                     key={item._id}
                                     className="rounded-full bg-slate-100 px-4 py-2 text-[13px] font-normal cursor-pointer text-slate-800 hover:bg-slate-200 transition-colors capitalize"
-                                    onClick={()=> {
+                                    onClick={() => {
                                         router.push(`/blog_topics/${item._id}`)
                                     }}
                                 >
@@ -103,7 +103,7 @@ export default function Sidebar() {
                                 </button>
                             ))}
                 </div>
-               
+
             </section>
 
             {/* Who to follow */}

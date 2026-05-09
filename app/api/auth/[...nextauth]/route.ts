@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
             async profile(profile) {
                 try {
-                    const res = await axios.post("http://localhost:8000/api/v1/auth/google-login", { email: profile.email});
+                    const res = await axios.post(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/google-login`, { email: profile.email });
 
                     if (res?.data?.success) {
                         return {
@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.NEXT_PUBLIC_GITHUB_CLIENT_SECRET as string,
             async profile(profile) {
                 try {
-                    const res = await axios.post("http://localhost:8000/api/v1/auth/google-login", { email: profile.email});
+                    const res = await axios.post(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/google-login`, { email: profile.email });
 
                     if (res?.data?.success) {
                         return {
@@ -79,11 +79,11 @@ export const authOptions: NextAuthOptions = {
         LinkedInProvider({
             clientId: process.env.Next_PUBLIC_LINKEDIN_CLIENT_ID as string,
             clientSecret: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_SECRET as string,
-            async profile(profile){
-                try{
-                    const res = await axios.post("http://localhost:8000/api/v1/auth/google-login", { email: profile.email});
+            async profile(profile) {
+                try {
+                    const res = await axios.post(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/google-login`, { email: profile.email });
 
-                    if(res?.data?.success){
+                    if (res?.data?.success) {
                         return {
                             id: res.data.data.user.id,
                             name: res.data.data.user.name,
@@ -92,7 +92,7 @@ export const authOptions: NextAuthOptions = {
                         }
                     }
                     return res?.data;
-                }catch(err){
+                } catch (err) {
                     if (axios?.isAxiosError(err)) {
                         const message = err?.response?.data?.data;
                         throw new Error(message);
@@ -118,7 +118,7 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
                 try {
-                    const res = await axios.post("http://localhost:8000/api/v1/auth/login", { email: credentials?.email, password: credentials?.password });
+                    const res = await axios.post(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/login`, { email: credentials?.email, password: credentials?.password });
 
                     if (res?.data?.success) {
                         return {

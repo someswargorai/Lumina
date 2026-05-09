@@ -44,7 +44,7 @@ export default function Trash() {
             const params = new URLSearchParams();
             params.set("search", search);
 
-            const res = await axios.get(`http://localhost:8002/api/v1/blog/trash-blogs?${params.toString()}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/trash-blogs?${params.toString()}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -57,7 +57,7 @@ export default function Trash() {
 
     const restoreMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await axios.put(`http://localhost:8002/api/v1/blog/restore-blog/${id}`, {}, {
+            const res = await axios.put(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/restore-blog/${id}`, {}, {
                 headers: { Authorization: `Bearer ${session?.accessToken}` }
             });
             return res.data;
@@ -72,7 +72,7 @@ export default function Trash() {
 
     const permanentDeleteMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await axios.delete(`http://localhost:8002/api/v1/blog/permanent-delete-blog/${id}`, {
+            const res = await axios.delete(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/permanent-delete-blog/${id}`, {
                 headers: { Authorization: `Bearer ${session?.accessToken}` }
             });
             return res.data;

@@ -29,7 +29,7 @@ export default function Dashboard() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["blog", id],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:8002/api/v1/blog/get-blog/${id}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-blog/${id}`, {
                 headers: {
                     Authorization: `Bearer ${session?.accessToken}`
                 }
@@ -44,7 +44,7 @@ export default function Dashboard() {
 
     const commentMutation = useMutation({
         mutationFn: async () => {
-            const res = await axios.post(`http://localhost:8002/api/v1/blog/add-comment/${id}`, { text: commentText }, {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/add-comment/${id}`, { text: commentText }, {
                 headers: { Authorization: `Bearer ${session?.accessToken}` }
             });
             return res.data;
@@ -58,7 +58,7 @@ export default function Dashboard() {
 
     const upvoteMutation = useMutation({
         mutationFn: async () => {
-            const res = await axios.patch(`http://localhost:8002/api/v1/blog/toggle-upvote/${id}`, {}, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/toggle-upvote/${id}`, {}, {
                 headers: { Authorization: `Bearer ${session?.accessToken}` }
             });
             return res.data;
@@ -154,95 +154,95 @@ export default function Dashboard() {
                 id={id as string}
                 initialContent={data?.data?.content}
             />
-            {!isLoadingOrNot && data?.data?.isPublish && 
-            <section className="max-w-3xl mx-auto px-6 mt-10">
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-xl font-normal text-slate-900 tracking-tight">
-                        Responses ( {data?.data?.comments?.length || 0} )
-                    </h2>
+            {!isLoadingOrNot && data?.data?.isPublish &&
+                <section className="max-w-3xl mx-auto px-6 mt-10">
+                    <div className="flex items-center justify-between mb-8">
+                        <h2 className="text-xl font-normal text-slate-900 tracking-tight">
+                            Responses ( {data?.data?.comments?.length || 0} )
+                        </h2>
 
-                    <button
-                        onClick={() => { setUpvoteLength(data?.data?.upvotes?.includes(session?.id) ? upvoteLength - 1 : upvoteLength + 1); upvoteMutation.mutate() }}
-                        className={`flex items-center gap-2 group transition-colors cursor-pointer ${data?.data?.upvotes?.includes(session?.id) ? 'text-black' : 'text-slate-500 hover:text-black'}`}
-                    >
-                        <Hand size={18} className={data?.data?.upvotes?.includes(session?.id) ? 'fill-current rotate-12' : 'group-hover:rotate-12 transition-transform'} />
-                        <span className="text-sm font-bold">{upvoteLength}</span>
-                    </button>
-                </div>
-
-                {/* Comment Input */}
-                <div className="bg-slate-50 border border-slate-100 rounded-md p-4 mb-10 group focus-within:bg-white focus-within:border-slate-200 focus-within:shadow-xl focus-within:shadow-slate-100 transition-all">
-                    <div className="flex items-center gap-3 mb-3">
-                        <Avatar className="h-6 w-6">
-                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${session?.user?.name}`} />
-                            <AvatarFallback>U</AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm font-bold text-slate-900 capitalize">{session?.user?.name}</span>
-                    </div>
-                    <textarea
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        placeholder="What are your thoughts?"
-                        className="w-full border-none bg-transparent p-2 focus:ring-0 text-[15px] text-slate-800 placeholder-slate-400 resize-none min-h-[80px]"
-                    />
-                    <div className="flex justify-end mt-2">
-                        <Button
-                            disabled={!commentText.trim() || commentMutation.isPending}
-                            onClick={() => commentMutation.mutate()}
-                            className="bg-slate-900 text-white rounded-full px-6 font-bold h-9 hover:bg-black transition-colors"
+                        <button
+                            onClick={() => { setUpvoteLength(data?.data?.upvotes?.includes(session?.id) ? upvoteLength - 1 : upvoteLength + 1); upvoteMutation.mutate() }}
+                            className={`flex items-center gap-2 group transition-colors cursor-pointer ${data?.data?.upvotes?.includes(session?.id) ? 'text-black' : 'text-slate-500 hover:text-black'}`}
                         >
-                            Respond
-                        </Button>
+                            <Hand size={18} className={data?.data?.upvotes?.includes(session?.id) ? 'fill-current rotate-12' : 'group-hover:rotate-12 transition-transform'} />
+                            <span className="text-sm font-bold">{upvoteLength}</span>
+                        </button>
                     </div>
-                </div>
 
-                {/* Comment List */}
-                <div className="space-y-8" id="comments">
-                    {data?.data?.comments?.length === 0 ? (
-                        <div className="text-center py-10">
-                            <p className="text-slate-400 italic text-sm">Be the first to share your thoughts.</p>
+                    {/* Comment Input */}
+                    <div className="bg-slate-50 border border-slate-100 rounded-md p-4 mb-10 group focus-within:bg-white focus-within:border-slate-200 focus-within:shadow-xl focus-within:shadow-slate-100 transition-all">
+                        <div className="flex items-center gap-3 mb-3">
+                            <Avatar className="h-6 w-6">
+                                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${session?.user?.name}`} />
+                                <AvatarFallback>U</AvatarFallback>
+                            </Avatar>
+                            <span className="text-sm font-bold text-slate-900 capitalize">{session?.user?.name}</span>
                         </div>
-                    ) : (
-                        data?.data?.comments?.map((comment: {
-                            user: {
-                                name: string
-                            },
-                            comment: string
-                        }, idx: number) => (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.1 }}
-                                key={idx}
-                                className="space-y-3"
+                        <textarea
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            placeholder="What are your thoughts?"
+                            className="w-full border-none bg-transparent p-2 focus:ring-0 text-[15px] text-slate-800 placeholder-slate-400 resize-none min-h-[80px]"
+                        />
+                        <div className="flex justify-end mt-2">
+                            <Button
+                                disabled={!commentText.trim() || commentMutation.isPending}
+                                onClick={() => commentMutation.mutate()}
+                                className="bg-slate-900 text-white rounded-full px-6 font-bold h-9 hover:bg-black transition-colors"
                             >
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <Avatar className="h-8 w-8">
-                                            <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user?.name}`} />
-                                            <AvatarFallback>C</AvatarFallback>
-                                        </Avatar>
-                                        <div className="flex flex-col">
-                                            <span className="text-[13px] font-bold text-slate-900 leading-tight capitalize">
-                                                {comment.user?.name || "Reader"}
-                                            </span>
-                                            <span className="text-[11px] text-slate-400 font-medium">
-                                                {format(new Date(data?.data.createdAt), "MMM d, yyyy")}
-                                            </span>
+                                Respond
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Comment List */}
+                    <div className="space-y-8" id="comments">
+                        {data?.data?.comments?.length === 0 ? (
+                            <div className="text-center py-10">
+                                <p className="text-slate-400 italic text-sm">Be the first to share your thoughts.</p>
+                            </div>
+                        ) : (
+                            data?.data?.comments?.map((comment: {
+                                user: {
+                                    name: string
+                                },
+                                comment: string
+                            }, idx: number) => (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.1 }}
+                                    key={idx}
+                                    className="space-y-3"
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <Avatar className="h-8 w-8">
+                                                <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${comment.user?.name}`} />
+                                                <AvatarFallback>C</AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex flex-col">
+                                                <span className="text-[13px] font-bold text-slate-900 leading-tight capitalize">
+                                                    {comment.user?.name || "Reader"}
+                                                </span>
+                                                <span className="text-[11px] text-slate-400 font-medium">
+                                                    {format(new Date(data?.data.createdAt), "MMM d, yyyy")}
+                                                </span>
+                                            </div>
                                         </div>
+                                        <button className="text-slate-400 hover:text-black">
+                                            <MoreHorizontal size={16} />
+                                        </button>
                                     </div>
-                                    <button className="text-slate-400 hover:text-black">
-                                        <MoreHorizontal size={16} />
-                                    </button>
-                                </div>
-                                <p className="text-[15px] text-slate-700 leading-relaxed pl-11">
-                                    {comment.comment}
-                                </p>
-                            </motion.div>
-                        ))
-                    )}
-                </div>
-            </section>}
+                                    <p className="text-[15px] text-slate-700 leading-relaxed pl-11">
+                                        {comment.comment}
+                                    </p>
+                                </motion.div>
+                            ))
+                        )}
+                    </div>
+                </section>}
         </>
     );
 }

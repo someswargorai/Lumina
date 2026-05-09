@@ -14,11 +14,11 @@ export default function Footer() {
           <div className="col-span-2 lg:col-span-2">
             <div className="text-2xl font-bold tracking-tighter mb-6">LUMINA</div>
             <p className="text-slate-500 max-w-xs text-sm leading-relaxed">
-              An independent publication dedicated to the intersection of technology and human experience. 
+              An independent publication dedicated to the intersection of technology and human experience.
               Designed for the modern intellectual.
             </p>
           </div>
-          
+
           <div>
             <h4 className="font-bold text-sm mb-6 uppercase tracking-wider">Publication</h4>
             <ul className="space-y-4 text-sm text-slate-500">
@@ -46,18 +46,18 @@ export default function Footer() {
                 <Facebook />
               </a>
               <a href="#" className="text-slate-400 hover:text-slate-900 transition-colors size-7">
-                <Instagram/>
+                <Instagram />
               </a>
               <a href="#" className="text-slate-400 hover:text-slate-900 transition-colors size-7">
-                <Linkedin/>
+                <Linkedin />
               </a>
               <a href="#" className="text-slate-400 hover:text-slate-900 transition-colors size-7">
-                <Twitter/>
+                <Twitter />
               </a>
             </div>
           </div>
         </div>
-        
+
         <div className="mt-20 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
           <p>© 2026 Lumina Media. All rights reserved.</p>
           <div className="flex gap-8">

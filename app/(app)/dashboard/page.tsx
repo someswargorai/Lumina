@@ -7,11 +7,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
-import { 
-  Plus, 
-  FileText, 
-  LayoutDashboard, 
-  Clock, 
+import {
+  Plus,
+  FileText,
+  LayoutDashboard,
+  Clock,
   MoreVertical,
   Sparkles,
   ArrowRight,
@@ -28,8 +28,8 @@ export default function Dashboard() {
   const { data: blogsResponse, isLoading } = useQuery({
     queryKey: ['blogs'],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:8002/api/v1/blog/get-blogs?owned=true", { 
-        headers: { Authorization: `Bearer ${session?.accessToken}` } 
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-blogs?owned=true`, {
+        headers: { Authorization: `Bearer ${session?.accessToken}` }
       });
       return response.data;
     },
@@ -38,11 +38,11 @@ export default function Dashboard() {
 
   const createBlogMutation = useMutation({
     mutationFn: async () => {
-      const response = await axios.post("http://localhost:8002/api/v1/blog/create-blog", {
+      const response = await axios.post("${process.env.NEXT_PUBLIC_BLOG_URL}/blog/create-blog", {
         title: "Untitled",
         content: "Untitled"
-      }, { 
-        headers: { Authorization: `Bearer ${session?.accessToken}` } 
+      }, {
+        headers: { Authorization: `Bearer ${session?.accessToken}` }
       });
       return response.data;
     },
@@ -74,10 +74,10 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-neutral-50/50 dark:bg-neutral-950/50 p-6 md:p-10 lg:p-12">
       <div className="max-w-6xl mx-auto space-y-5">
-        
+
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -94,22 +94,22 @@ export default function Dashboard() {
               Here&apos;s what&apos;s happening with your projects today.
             </p>
           </motion.div>
-          
+
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-2"
         >
-  
-          <div 
-            onClick={handleCreateNew} 
+
+          <div
+            onClick={handleCreateNew}
             className={`group block h-full ${createBlogMutation.isPending ? 'opacity-70 pointer-events-none' : ''}`}
           >
-            <Card className="h-full border-dashed border  bg-transparent hover:bg-blue-50/50 dark:hover:bg-blue-950/20 hover:border-blue-300 dark:hover:border-blue-800 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center py-12"> 
-             
+            <Card className="h-full border-dashed border  bg-transparent hover:bg-blue-50/50 dark:hover:bg-blue-950/20 hover:border-blue-300 dark:hover:border-blue-800 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center py-12">
+
               <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 {createBlogMutation.isPending ? (
                   <Loader2 className="h-6 w-6 text-blue-600 dark:text-blue-400 animate-spin" />
@@ -123,12 +123,12 @@ export default function Dashboard() {
               </p>
             </Card>
           </div>
- 
-       
+
+
         </motion.div>
 
         {/* Recent Documents Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
@@ -137,7 +137,7 @@ export default function Dashboard() {
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-normal tracking-tight">Recent Files</h2>
           </div>
-          
+
           <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden">
             {isLoading ? (
               <div className="p-12 flex justify-center">
@@ -157,9 +157,9 @@ export default function Dashboard() {
             ) : (
               <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
                 {recentBlogs.map((blog: {
-                    _id: string;
-                    title: string;
-                    updatedAt: string;
+                  _id: string;
+                  title: string;
+                  updatedAt: string;
                 }, idx: number) => {
                   const colors = [
                     'bg-blue-500/10 text-blue-500',
@@ -172,8 +172,8 @@ export default function Dashboard() {
                   const formattedTime = blog.updatedAt ? formatDistanceToNow(new Date(blog.updatedAt), { addSuffix: true }) : 'Recently';
 
                   return (
-                    <div 
-                      key={blog._id} 
+                    <div
+                      key={blog._id}
                       onClick={() => router.push(`/dashboard/${blog._id}`)}
                       className="p-4 sm:px-6 flex items-center justify-between hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors group cursor-pointer"
                     >
@@ -194,9 +194,9 @@ export default function Dashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           className="h-8 w-8 text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
                           onClick={(e) => {
                             e.stopPropagation();

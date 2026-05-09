@@ -30,7 +30,7 @@ export default function BlogTopicsIndex() {
     const { data: topics, isLoading } = useQuery({
         queryKey: ["all-topics"],
         queryFn: async () => {
-            const res = await axios.get("http://localhost:8002/api/v1/blog/get-topics", {
+            const res = await axios.get("${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-topics", {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -56,7 +56,7 @@ export default function BlogTopicsIndex() {
         );
     }
 
-    const availableTopics = topics?.data?.filter((t: {_id: string}) => t._id) || [];
+    const availableTopics = topics?.data?.filter((t: { _id: string }) => t._id) || [];
 
     return (
         <div className="flex flex-col px-6">
@@ -71,7 +71,7 @@ export default function BlogTopicsIndex() {
                         <p className="text-slate-400">No topics found yet.</p>
                     </div>
                 ) : (
-                    availableTopics.map((topic: {_id: string}) => {
+                    availableTopics.map((topic: { _id: string }) => {
                         const Icon = TOPIC_ICONS[topic._id] || BookOpen;
                         return (
                             <div

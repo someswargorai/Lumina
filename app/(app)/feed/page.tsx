@@ -31,7 +31,7 @@ export default function FeedPage() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["feed-blogs"],
         queryFn: async () => {
-            const res = await axios.get("http://localhost:8002/api/v1/blog/get-feed-of-followings", {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-feed-of-followings`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`

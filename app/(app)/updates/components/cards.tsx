@@ -31,7 +31,7 @@ export function PostCard({ post, bookmarked }: PostCardProps) {
 
     const bookMarkBlogMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await axios.patch(`http://localhost:8002/api/v1/blog/toggle-bookmark/${id}`, {}, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/toggle-bookmark/${id}`, {}, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -130,14 +130,14 @@ export function PostCard({ post, bookmarked }: PostCardProps) {
                         </div>
 
                         <div className="flex items-center gap-2">
-                          
+
                             <button className={`p-2 rounded-full hover:bg-slate-50 transition-all cursor-pointer ${hitBookmark ? " text-black" : "border-gray-400 text-gray-500"}`} onClick={() => {
                                 setHitBookmark(prev => !prev);
                                 BookmarkTheBlog(post.id)
                             }}>
                                 {hitBookmark ? <Bookmark size={18} fill="currentColor" /> : <Bookmark size={18} />}
                             </button>
-                           
+
                         </div>
                     </div>
                 </div>

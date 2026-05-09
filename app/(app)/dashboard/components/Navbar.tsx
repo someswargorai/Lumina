@@ -73,7 +73,7 @@ export default function Navbar({ onMobileSidebarOpen }: { onMobileSidebarOpen?: 
 
     const moveToTrashMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.delete(`http://localhost:8002/api/v1/blog/delete-blog/${id}`, {
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/delete-blog/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -98,7 +98,7 @@ export default function Navbar({ onMobileSidebarOpen }: { onMobileSidebarOpen?: 
             setLoading(true);
         },
         mutationFn: async () => {
-            const response = await axios.patch(`http://localhost:8002/api/v1/blog/make-public/${id}`, {
+            const response = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/make-public/${id}`, {
                 topic: selectedTopic
             }, {
                 headers: {

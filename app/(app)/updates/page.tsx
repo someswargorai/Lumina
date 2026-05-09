@@ -9,9 +9,9 @@ import { Post } from "./types";
 export interface BlogFromBackend {
     _id: string;
     title: string;
-   content: {
-        content:{
-            text:string;
+    content: {
+        content: {
+            text: string;
         }[]
     }[],
     author: {
@@ -30,7 +30,7 @@ export default function Updates() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["updated-blogs"],
         queryFn: async () => {
-            const res = await axios.get("http://localhost:8002/api/v1/blog/updated-blogs", {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/updated-blogs`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`

@@ -11,8 +11,8 @@ interface BlogFromBackend {
     _id: string;
     title: string;
     content: {
-        content:{
-            text:string;
+        content: {
+            text: string;
         }[]
     }[],
     author: {
@@ -31,7 +31,7 @@ export default function Saved() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["saved-blogs"],
         queryFn: async () => {
-            const res = await axios.get("http://localhost:8002/api/v1/blog/get-saved-blogs", {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-saved-blogs`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`

@@ -50,9 +50,9 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafafa] px-4 py-12 sm:px-6 lg:px-8">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+      <div
+        // initial={{ opacity: 0, y: 20 }}
+        // animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md space-y-8"
       >
         <div className="text-center">
@@ -66,23 +66,23 @@ export default function Login() {
 
         <div className="mt-8 space-y-6">
           <div className="grid grid-cols-2 gap-4">
-            <button 
+            <button
               onClick={() => handleSocialLogin('google')}
               className="flex w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 cursor-pointer"
             >
               <Google /> Google
             </button>
-            <button 
+            <button
               onClick={() => handleSocialLogin('github')}
               className="flex w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 cursor-pointer"
             >
               <Github /> GitHub
             </button>
-            <button 
+            <button
               onClick={() => handleSocialLogin('linkedin')}
               className="flex w-full items-center justify-center  gap-2 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 cursor-pointer"
             >
-              <Linkedin className="size-5"/> <span>LinkedIn</span>
+              <Linkedin className="size-5" /> <span>LinkedIn</span>
             </button>
           </div>
 
@@ -165,7 +165,7 @@ export default function Login() {
                     Sign in <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                   </>
                 )}
-              </button> 
+              </button>
             </div>
           </form>
 
@@ -176,7 +176,7 @@ export default function Login() {
             </Link>
           </p>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

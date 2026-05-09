@@ -34,7 +34,7 @@ export default function BlogPage() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["blog", id],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:8002/api/v1/blog/get-blog/${id}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-blog/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -53,7 +53,7 @@ export default function BlogPage() {
 
     const upvoteMutation = useMutation({
         mutationFn: async () => {
-            const res = await axios.patch(`http://localhost:8002/api/v1/blog/toggle-upvote/${id}`, {}, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/toggle-upvote/${id}`, {}, {
                 headers: { Authorization: `Bearer ${session?.accessToken}` }
             });
             return res.data;
@@ -66,7 +66,7 @@ export default function BlogPage() {
 
     const commentMutation = useMutation({
         mutationFn: async () => {
-            const res = await axios.post(`http://localhost:8002/api/v1/blog/add-comment/${id}`, { text: commentText }, {
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/add-comment/${id}`, { text: commentText }, {
                 headers: { Authorization: `Bearer ${session?.accessToken}` }
             });
             return res.data;
@@ -80,7 +80,7 @@ export default function BlogPage() {
 
     const bookMarkBlogMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await axios.patch(`http://localhost:8002/api/v1/blog/toggle-bookmark/${id}`, {}, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/toggle-bookmark/${id}`, {}, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -102,7 +102,7 @@ export default function BlogPage() {
 
     const toggleFollowMutation = useMutation({
         mutationFn: async (id: string) => {
-            const res = await axios.patch(`http://localhost:8002/api/v1/blog/toggle-follow/${id}`, {}, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/toggle-follow/${id}`, {}, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -129,7 +129,7 @@ export default function BlogPage() {
     const author = blog?.author;
     const isUpvoted = blog?.upvotes?.includes(session?.id);
 
-    if (isLoading) { 
+    if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen bg-white">
                 <div className="flex flex-col items-center gap-4">

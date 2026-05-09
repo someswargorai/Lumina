@@ -49,7 +49,7 @@ export default function Sidebar({
 
     const updateBlogTitle = useMutation({
         mutationFn: async ({ title, id }: { title: string, id: string }) => {
-            const response = await axios.put(`http://localhost:8002/api/v1/blog/update-blog-title/${id}`, {
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/update-blog-title/${id}`, {
                 title
             }, {
                 headers: {
@@ -76,7 +76,7 @@ export default function Sidebar({
 
     const createBlogMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.post("http://localhost:8002/api/v1/blog/create-blog", {
+            const response = await axios.post("${process.env.NEXT_PUBLIC_BLOG_URL}/blog/create-blog", {
                 title: "Untitled",
                 content: "Untitled"
             }, { headers: { Authorization: `Bearer ${session?.accessToken}` } });
@@ -104,7 +104,7 @@ export default function Sidebar({
     const { data, isLoading, isError } = useQuery({
         queryKey: ['blogs'],
         queryFn: async () => {
-            const response = await axios.get("http://localhost:8002/api/v1/blog/get-blogs?owned=true", { headers: { Authorization: `Bearer ${session?.accessToken}` } });
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-blogs?owned=true`, { headers: { Authorization: `Bearer ${session?.accessToken}` } });
             return response.data;
         },
         enabled: !!session?.accessToken,
@@ -300,7 +300,7 @@ export default function Sidebar({
                         </DropdownMenu>
                     </div>
 
-                    
+
                 </div>
             </div >
         </div >

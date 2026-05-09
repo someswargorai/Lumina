@@ -30,14 +30,14 @@ export default function BlogTopicsPage() {
     const { data: session, status } = useSession();
     const router = useRouter();
 
-    const formattedTopic = typeof topic === 'string' 
-        ? topic.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) 
+    const formattedTopic = typeof topic === 'string'
+        ? topic.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
         : '';
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["blogs-by-topic", topic],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:8002/api/v1/blog/get-blogs-by-topic/${topic}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-blogs-by-topic/${topic}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`

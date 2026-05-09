@@ -22,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { PostCard } from "../../updates/components/cards";
 import { Post } from "../../updates/types";
 import { BlogFromBackend } from "../../updates/page";
+import { ProfilePageSkeleton } from "../components/skeleton";
 
 export default function ProfilePage() {
     const { id } = useParams();
@@ -37,7 +38,7 @@ export default function ProfilePage() {
     const { data, isLoading, isError } = useQuery({
         queryKey: ["profile", id],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:8002/api/v1/blog/get-profile/${id}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-profile/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -53,7 +54,7 @@ export default function ProfilePage() {
     const { data: blogsData, isLoading: isBlogsLoading } = useQuery({
         queryKey: ["user-blogs", id],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:8002/api/v1/blog/get-user-blogs/${id}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-user-blogs/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -67,7 +68,7 @@ export default function ProfilePage() {
     const { data: savedBlogsData, isLoading: isSavedBlogsLoading } = useQuery({
         queryKey: ["saved-blogs", id],
         queryFn: async () => {
-            const res = await axios.get(`http://localhost:8002/api/v1/blog/get-saved-blogs/${id}`, {
+            const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/get-saved-blogs/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -82,7 +83,7 @@ export default function ProfilePage() {
 
     const toggleFollowMutation = useMutation({
         mutationFn: async () => {
-            const res = await axios.patch(`http://localhost:8002/api/v1/blog/toggle-follow/${id}`, {}, {
+            const res = await axios.patch(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/toggle-follow/${id}`, {}, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${session?.accessToken}`
@@ -106,21 +107,17 @@ export default function ProfilePage() {
             setFollowersCount(prev => context?.prevFollowing ? prev + 1 : prev - 1);
             if (axios.isAxiosError(err)) {
                 toast.error(err.response?.data?.message || "Failed to update follow status");
-            } 
+            }
         }
     });
 
-    if (isLoading) {
+    if (isLoading || !data) {
         return (
-            <div className="flex flex-col items-center justify-center h-screen gap-4">
-                <div className="w-24 h-24 rounded-full bg-slate-100 animate-pulse" />
-                <div className="h-8 w-48 bg-slate-100 animate-pulse rounded" />
-                <div className="h-4 w-64 bg-slate-50 animate-pulse rounded" />
-            </div>
+            <ProfilePageSkeleton />
         );
     }
 
-    if (isError || !data?.user) {
+    if (isError) {
         return (
             <div className="flex flex-col items-center justify-center h-[80vh] gap-4">
                 <p className="text-slate-500">User not found or an error occurred.</p>
@@ -168,8 +165,8 @@ export default function ProfilePage() {
                                         onClick={() => toggleFollowMutation.mutate()}
                                         variant={isFollowing ? "outline" : "default"}
                                         className={`rounded-full px-8 font-semibold transition-all h-10 ${isFollowing
-                                                ? "border-slate-200 hover:border-red-200 hover:text-red-600 hover:bg-red-50"
-                                                : "bg-black text-white hover:bg-slate-800"
+                                            ? "border-slate-200 hover:border-red-200 hover:text-red-600 hover:bg-red-50"
+                                            : "bg-black text-white hover:bg-slate-800"
                                             }`}
                                     >
                                         {isFollowing ? (
@@ -257,23 +254,21 @@ export default function ProfilePage() {
                     {/* Tabs / Recent Activity */}
                     <div className="mt-8">
                         <div className="flex gap-8 border-b border-slate-100 dark:border-neutral-800 mb-6">
-                            <button 
+                            <button
                                 onClick={() => setActiveTab("articles")}
-                                className={`pb-4 text-[15px] transition-all cursor-pointer ${
-                                    activeTab === "articles" 
-                                        ? "font-bold text-slate-900 border-b-2 border-black dark:text-white dark:border-white" 
+                                className={`pb-4 text-[15px] transition-all cursor-pointer ${activeTab === "articles"
+                                        ? "font-bold text-slate-900 border-b-2 border-black dark:text-white dark:border-white"
                                         : "font-medium text-slate-400 hover:text-slate-600"
-                                }`}
+                                    }`}
                             >
                                 Articles
                             </button>
-                            <button 
+                            <button
                                 onClick={() => setActiveTab("saved")}
-                                className={`pb-4 text-[15px] transition-all cursor-pointer ${
-                                    activeTab === "saved" 
-                                        ? "font-bold text-slate-900 border-b-2 border-black dark:text-white dark:border-white" 
+                                className={`pb-4 text-[15px] transition-all cursor-pointer ${activeTab === "saved"
+                                        ? "font-bold text-slate-900 border-b-2 border-black dark:text-white dark:border-white"
                                         : "font-medium text-slate-400 hover:text-slate-600"
-                                }`}
+                                    }`}
                             >
                                 Saved
                             </button>
@@ -316,10 +311,10 @@ export default function ProfilePage() {
                                             readTime: "5 min read"
                                         };
                                         return (
-                                            <PostCard 
-                                                key={post.id} 
-                                                post={post} 
-                                                bookmarked={blogsData?.bookmarks?.includes(post.id)} 
+                                            <PostCard
+                                                key={post.id}
+                                                post={post}
+                                                bookmarked={blogsData?.bookmarks?.includes(post.id)}
                                             />
                                         );
                                     })
@@ -342,7 +337,7 @@ export default function ProfilePage() {
                                     savedBlogsData.data.map((blog: BlogFromBackend) => {
                                         const post: Post = {
                                             id: blog._id,
-                                            title: blog.title, 
+                                            title: blog.title,
                                             excerpt: typeof blog.content === 'object' && Array.isArray(blog.content)
                                                 ? `${blog.content?.[0]?.content?.[0]?.text || ''} ${blog.content?.[1]?.content?.[0]?.text || ''}`.trim().slice(0, 450) + "..."
                                                 : "No preview available",
@@ -361,9 +356,9 @@ export default function ProfilePage() {
                                             readTime: "5 min read"
                                         };
                                         return (
-                                            <PostCard 
-                                                key={post.id} 
-                                                post={post} 
+                                            <PostCard
+                                                key={post.id}
+                                                post={post}
                                                 bookmarked={true}
                                             />
                                         );

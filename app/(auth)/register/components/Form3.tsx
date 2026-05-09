@@ -34,7 +34,7 @@ export default function Form3({
     });
 
     const [loading, setLoading] = useState(false);
-    
+
     useEffect(() => {
         const loadData = async () => {
             const cookieValue = await getFromCookies("registration_step3");
@@ -62,7 +62,7 @@ export default function Form3({
     };
 
     const onSubmit = async (data: Form3Schema) => {
-        try{
+        try {
             setLoading(true);
 
             await saveToCookies("registration_step3", data);
@@ -78,23 +78,23 @@ export default function Form3({
                 email: form1CookieValue.email
             }
 
-            const res = await axios.post("http://localhost:8000/api/v1/auth/verify-user", payload);
-            if(res?.data?.success){
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/verify-user`, payload);
+            if (res?.data?.success) {
                 console.log(res);
                 toast.success(res?.data?.data?.message);
                 setStep(4);
             }
-        }catch(error){
+        } catch (error) {
             if (axios.isAxiosError(error)) {
                 toast.error(error.response?.data?.message || "Something went wrong");
             } else {
                 toast.error("Something went wrong");
             }
-        }finally{
+        } finally {
             setLoading(false);
         }
-        
-        
+
+
     };
 
     return (
@@ -171,7 +171,7 @@ export default function Form3({
                         className="flex-1 bg-slate-900 text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all flex items-center justify-center gap-3 cursor-pointer"
                     >
                         {loading ? "" : "Verify Account"} {loading ? <Loader className="animate-spin" size={18} /> : <ChevronRight size={18} />}
-                    </button> 
+                    </button>
                 </footer>
             </form>
         </div>

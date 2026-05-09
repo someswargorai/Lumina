@@ -38,7 +38,7 @@ export default function Form4({
             const form1 = await getFromCookies("registration_step1");
             const form2 = await getFromCookies("registration_step2");
             const form3 = await getFromCookies("registration_step3");
-            if (!form1 || !form2 || !form3 ) {
+            if (!form1 || !form2 || !form3) {
                 throw new Error("Something went wrong, please try again");
             }
             const form1CookieValue = JSON.parse(form1);
@@ -57,7 +57,7 @@ export default function Form4({
                 interests: form3CookieValue.interests,
                 otp: data.otp
             }
-            const res = await axios.post("http://localhost:8000/api/v1/auth/verify-otp", payload);
+            const res = await axios.post(`${process.env.NEXT_PUBLIC_AUTH_URL}/auth/verify-otp`, payload);
             if (res?.data?.success) {
                 console.log(res);
                 toast.success(res?.data?.data?.message);
@@ -71,7 +71,7 @@ export default function Form4({
             if (axios.isAxiosError(error)) {
                 toast.error(error?.response?.data?.message || "Something went wrong, please try again");
             }
-        }finally{
+        } finally {
             setLoading(false);
         }
     };
