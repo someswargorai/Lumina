@@ -124,7 +124,9 @@ export default function Sidebar() {
                         <p className="text-sm text-slate-400 italic">No users found to follow.</p>
                     ) : (
                         users.slice(0, 5).map((user) => (
-                            <div key={user._id} className="flex items-start gap-3 group">
+                            <div key={user._id} className="flex items-start gap-3 group cursor-pointer" onClick={() => {
+                                router.push(`/profile/${user._id}`)
+                            }}>
                                 <Avatar className="h-10 w-10">
                                     <AvatarImage src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`} />
                                     <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>

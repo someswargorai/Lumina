@@ -24,7 +24,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 enableSystem
                 disableTransitionOnChange>
                 <TooltipProvider>
-                    <div className="flex h-screen overflow-hidden">
+                    <div className="flex h-fit md:h-screen overflow-hidden">
                         {/* Desktop sidebar — hidden on small screens */}
                         <div className="hidden lg:flex w-64">
                             <Sidebar />

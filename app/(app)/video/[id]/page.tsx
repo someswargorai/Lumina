@@ -66,16 +66,6 @@ export default function Page() {
         });
         socketRef.current = socket;
 
-        socket.on("call_rejected", () => {
-            toast.error("Call rejected");
-            router.push(`/chat/${userId}`);
-        });
-
-        socket.on("call_end", () => {
-            toast.info("Call ended");
-            cleanup();
-            window.location.assign(`/chat/${userId}`);
-        });
 
         socket.on("video", (data: { senderId: string; peerId: string; name: string }) => {
             if (data.senderId === session.id) return;
@@ -146,6 +136,18 @@ export default function Page() {
                         if (v) { v.srcObject = remoteStream; v.play().catch(() => { }); }
                     });
                 }
+            });
+
+
+            socket.on("call_rejected", () => {
+                toast.error("Call rejected");
+                router.push(`/chat/${userId}`);
+            });
+
+            socket.on("call_end", () => {
+                toast.info("Call ended");
+                cleanup();
+                window.location.assign(`/chat/${userId}`);
             });
         });
 

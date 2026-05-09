@@ -30,7 +30,7 @@ export const config = {
         "/profile/:path*",
         "/login",
         "/register",
-        "/updates/:path*",
+        // "/updates/:path*",
         "/search/:path*",
         "/favourites/:path*",
         "/settings/:path*",

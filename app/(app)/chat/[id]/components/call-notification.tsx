@@ -1,95 +1,133 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface CallData {
-    roomId: string,
-    senderId: string,
-    receiverId: string,
-    type: "voice",
-    name: string,
-    peerId: string
+    roomId: string;
+    senderId: string;
+    receiverId: string;
+    type: "voice";
+    name: string;
+    peerId: string;
+    audioStream?: React.MutableRefObject<MediaStream | null>;
 }
 
-export default function IncomingCallUI({ callData, setCallTrue, acceptCall, rejectCall }: { callData: CallData, setCallTrue: React.Dispatch<React.SetStateAction<boolean>>, acceptCall: () => void, rejectCall: () => void }) {
+export default function IncomingCallUI({
+    callData,
+    acceptCall,
+    rejectCall,
+}: {
+    callData: CallData;
+    acceptCall: () => void;
+    rejectCall: () => void;
+}) {
+    const [callAccepted, setCallAccepted] = useState(false);
+    const [elapsed, setElapsed] = useState(0);
+    const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    useEffect(() => {
+        if (callAccepted) {
+            timerRef.current = setInterval(() => {
+                setElapsed((prev) => prev + 1);
+            }, 1000);
+        }
+        return () => {
+            if (timerRef.current) clearInterval(timerRef.current);
+        };
+    }, [callAccepted]);
+
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+        const s = (seconds % 60).toString().padStart(2, "0");
+        return `${m}:${s}`;
+    };
+
+    const handleAccept = () => {
+        setCallAccepted(true);
+        acceptCall();
+    };
+
+    const handleDecline = () => {
+        if (timerRef.current) clearInterval(timerRef.current);
+        rejectCall();
+    };
+
     return (
-        <div className="fixed inset-0 z-[9999] flex items-start justify-center bg-black/40  px-4 pt-10">
+        <div className="fixed inset-x-0 top-12 z-[9999] flex justify-center px-4">
+            {/* Compact Banner Card */}
+            <div className="w-full max-w-sm rounded-lg bg-[#5c5c5c] shadow-2xl overflow-hidden backdrop-blur-md">
 
-            {/* Floating Card */}
-            <div className="relative mt-20 w-full max-w-md overflow-hidden rounded-lg border border-indigo-500/20 bg-gradient-to-b from-[#171b46] to-[#16345f] shadow-[0_20px_120px_rgba(79,70,229,0.45)]">
+                {/* Top row: name + subtitle + avatar */}
+                <div className="flex items-center justify-between px-5 pt-4 pb-3">
 
-                {/* Glow */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.18),transparent_60%)]" />
-
-                {/* Header */}
-                <div className="relative z-10 flex items-center justify-center gap-3 border-b border-white/10 px-6 py-4">
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-400 animate-pulse" />
-
-                    <p className="text-sm uppercase tracking-[3px] text-white/60 font-semibold">
-                        Incoming Call
-                    </p>
-                </div>
-
-                {/* Content */}
-                <div className="relative z-10 flex flex-col items-center px-8 py-10">
-
-                    {/* Avatar */}
-                    <div className="relative mb-6">
-                        <div className="absolute inset-0 rounded-full bg-indigo-500/20 blur-2xl animate-pulse" />
-
-                        <div className="relative flex h-32 w-32 items-center justify-center rounded-full border border-indigo-400/30 bg-gradient-to-br from-indigo-400 to-purple-500 text-5xl font-semibold shadow-[0_0_50px_rgba(99,102,241,0.45)]">
-                            A
-                        </div>
-                    </div>
-
-                    {/* User Info */}
-                    <div className="text-center">
-                        <h2 className="text-3xl font-semibold tracking-tight text-white">
+                    {/* Left: text info */}
+                    <div className="flex flex-col">
+                        <span className="text-white font-semibold text-base leading-tight capitalize">
                             {callData.name}
-                        </h2>
-
-
-                    </div>
-
-                    {/* Buttons */}
-                    <div className="mt-10 flex items-center gap-10">
-
-                        {/* Decline */}
-                        <div className="flex flex-col items-center gap-3">
-                            <button className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500 shadow-[0_10px_35px_rgba(239,68,68,0.45)] transition-all hover:scale-110 active:scale-95" onClick={() => { rejectCall() }}>
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    strokeWidth={2}
-                                    stroke="currentColor"
-                                    className="h-7 w-7 text-white"
-                                >
-                                    <path
+                        </span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            {callAccepted ? (
+                                /* Timer shown when call is ongoing */
+                                <>
+                                    <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+                                    <span className="text-green-400 text-xs font-medium">
+                                        {formatTime(elapsed)}
+                                    </span>
+                                </>
+                            ) : (
+                                /* "Incoming Audio Call" shown before accepting */
+                                <>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="h-3.5 w-3.5 text-white/60"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
-                                        d="M18.364 5.636L5.636 18.364M5.636 5.636l12.728 12.728"
-                                    />
-                                </svg>
-                            </button>
-
-                            <span className="text-sm text-white/50"
-                            >
-                                Decline
-                            </span>
-                        </div>
-
-                        {/* Accept */}
-                        <div className="flex flex-col items-center gap-3">
-                            <button className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500 shadow-[0_10px_35px_rgba(34,197,94,0.45)] transition-all hover:scale-110 active:scale-95" onClick={() => { acceptCall() }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-phone-icon lucide-phone"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" /></svg>
-                            </button>
-
-                            <span className="text-sm text-white/50">
-                                Accept
-                            </span>
+                                    >
+                                        <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
+                                    </svg>
+                                    <span className="text-white/60 text-xs">
+                                        Incoming Audio Call
+                                    </span>
+                                </>
+                            )}
                         </div>
                     </div>
+
+                    {/* Right: avatar */}
+                    <div className="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-xl font-semibold text-white capitalize flex-shrink-0 ring-2 ring-white/10">
+                        {callData.name?.charAt(0)}
+                    </div>
+                </div>
+
+                {/* Bottom row: Decline + Accept/Ongoing buttons */}
+                <div className="grid grid-cols-2 py-2 px-5 gap-2 pb-4">
+                    {/* Decline — always visible */}
+                    <button
+                        className="py-2.5 text-white font-normal text-sm bg-[#ff3b30] hover:bg-[#e0352b] active:bg-[#c42f28] transition-colors cursor-pointer rounded-md"
+                        onClick={handleDecline}
+                    >
+                        {callAccepted ? "End Call" : "Decline"}
+                    </button>
+
+                    {/* Accept / Ongoing */}
+                    {callAccepted ? (
+                        <div className="py-2.5 text-white font-normal text-sm bg-green-600 rounded-md flex items-center justify-center gap-1.5 select-none">
+                            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse inline-block" />
+                            Ongoing
+                        </div>
+                    ) : (
+                        <button
+                            className="py-2 text-white font-normal text-sm bg-[#30a2ff] hover:bg-[#2b92e6] active:bg-[#2680cc] transition-colors cursor-pointer rounded-md"
+                            onClick={handleAccept}
+                        >
+                            Accept
+                        </button>
+                    )}
                 </div>
             </div>
+            {callAccepted === false && <audio src="/call.mp3" autoPlay loop ></audio>}
         </div>
     );
 }

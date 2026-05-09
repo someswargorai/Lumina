@@ -33,12 +33,12 @@ export default function Updates() {
             const res = await axios.get(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/updated-blogs`, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${session?.accessToken}`
+                    "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZmYzODdjNWI1MDk0YTA2YmQ4MmMzNSIsImVtYWlsIjoic29tZ29yYWk3MjZAZ21haWwuY29tIiwibmFtZSI6ImFsZXggbGFiIiwiaWF0IjoxNzc4MzMzODcwLCJleHAiOjE3Nzg1MDY2NzB9.aij-2YCOrumvInVrbID1CiDNX1AJpVPGbLvXbiHecL8`
                 }
             });
             return res.data;
         },
-        enabled: !!session?.accessToken,
+        enabled: true,
     });
 
     const isPageLoading = status === "loading" || (status === "authenticated" && isLoading);
