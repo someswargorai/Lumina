@@ -4,6 +4,7 @@ import GitHubProvider from "next-auth/providers/github";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import axios from "axios";
 import NextAuth, { DefaultSession, NextAuthOptions } from "next-auth";
+import NextAuthHandler from "next-auth/next";
 
 type UserType = {
     id: string;
@@ -172,5 +173,5 @@ export const authOptions: NextAuthOptions = {
 }
 
 
-const handler = NextAuth(authOptions);
+const handler = NextAuthHandler(authOptions);
 export { handler as GET, handler as POST }
