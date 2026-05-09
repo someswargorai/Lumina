@@ -31,7 +31,7 @@ export default function Login() {
       if (response?.ok) {
         toast.success("Successfully signed in!");
         // dispatch(setUser(session)); // Placeholder for Redux
-        globalThis.location.assign("/");
+        globalThis.location.assign("/dashboard");
       } else {
         console.log(response);
         toast.error(response?.error || "Sign in failed");;

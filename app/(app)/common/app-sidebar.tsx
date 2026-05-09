@@ -76,7 +76,7 @@ export default function Sidebar({
 
     const createBlogMutation = useMutation({
         mutationFn: async () => {
-            const response = await axios.post("${process.env.NEXT_PUBLIC_BLOG_URL}/blog/create-blog", {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BLOG_URL}/blog/create-blog`, {
                 title: "Untitled",
                 content: "Untitled"
             }, { headers: { Authorization: `Bearer ${session?.accessToken}` } });
