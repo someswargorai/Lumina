@@ -82,7 +82,7 @@ export default function Login() {
               onClick={() => handleSocialLogin('linkedin')}
               className="flex w-full items-center justify-center  gap-2 rounded-md border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 cursor-pointer"
             >
-              <Linkedin className="size-5" /> <span>LinkedIn</span>
+              <Linkedin /> <span>LinkedIn</span>
             </button>
           </div>
 

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export default async function proxy(request: NextRequest) {
 
     const cookie = await cookies();
-    const token = cookie.get("next-auth.session-token")?.value;
+    const token = cookie.get("next-auth.session-token")?.value || cookie.get("__Secure-next-auth.session-token")?.value;
 
     //if user is not logged in and tries to access dashboard
     if (!token) {
