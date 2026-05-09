@@ -49,7 +49,7 @@ export default function Form4({
                 name: form1CookieValue.name,
                 email: form1CookieValue.email,
                 password: form1CookieValue.password,
-                country: "IN",
+                country: "IND",
                 state: form2CookieValue.state,
                 city: form2CookieValue.city,
                 username: form3CookieValue.username,
